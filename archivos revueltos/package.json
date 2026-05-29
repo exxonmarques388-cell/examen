@@ -1,0 +1,20 @@
+{
+  "name": "exxon-poo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "01-ejemplo.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/exxonmarques388-cell/examen.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/exxonmarques388-cell/examen/issues"
+  },
+  "homepage": "https://github.com/exxonmarques388-cell/examen#readme"
+}
