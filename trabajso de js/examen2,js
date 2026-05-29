@@ -1,5 +1,9 @@
 
-    class Restaurante {
+    // sistemaRestaurante.js
+const prompt = require("prompt-sync")({sigint:true});
+
+class Mesa {
+  
     #hamburguesaSencilla = 15;
     #hamburguesaConQueso = 18;
     #hamburguesaEspecial = 20;
@@ -7,63 +11,115 @@
     #refresco = 5;
     #postre = 6;
 
-    mesa;
-    pedidos = [];
-    total = 0;
+    constructor(numero) {
+        this.numero = numero;
+        this.pedidos = [];
+        this.total = 0;
+    }
 
-    agregar(opcion) {
-        switch(opcion) {
-            case 1:
-                this.pedidos.push("Hamburguesa sencilla");
-                this.total += this.#hamburguesaSencilla;
-                break;
-            case 2:
-                this.pedidos.push("Hamburguesa con queso");
-                this.total += this.#hamburguesaConQueso;
-                break;
-            case 3:
-                this.pedidos.push("Hamburguesa especial");
-                this.total += this.#hamburguesaEspecial;
-                break;
-            case 4:
-                this.pedidos.push("Papas fritas");
-                this.total += this.#papasFritas;
-                break;
-            case 5:
-                this.pedidos.push("Refresco");
-                this.total += this.#refresco;
-                break;
-            case 6:
-                this.pedidos.push("Postre");
-                this.total += this.#postre;
-                break;
+  
+    get totalCuenta() {
+        return this.total;
+    }
+
+
+    set agregarPedido({producto, cantidad, precio}) {
+        this.pedidos.push({producto, cantidad, precio});
+        this.total += precio * cantidad;
+    }
+
+
+    registrarPedido(opcion, cantidad) {
+        try {
+            switch(opcion) {
+                case 1:
+                    this.agregarPedido = {producto:"Hamburguesa sencilla", cantidad, precio:this.#hamburguesaSencilla};
+                    break;
+                case 2:
+                    this.agregarPedido = {producto:"Hamburguesa con queso", cantidad, precio:this.#hamburguesaConQueso};
+                    break;
+                case 3:
+                    this.agregarPedido = {producto:"Hamburguesa especial", cantidad, precio:this.#hamburguesaEspecial};
+                    break;
+                case 4:
+                    this.agregarPedido = {producto:"Papas fritas", cantidad, precio:this.#papasFritas};
+                    break;
+                case 5:
+                    this.agregarPedido = {producto:"Refresco", cantidad, precio:this.#refresco};
+                    break;
+                case 6:
+                    this.agregarPedido = {producto:"Postre", cantidad, precio:this.#postre};
+                    break;
+                default:
+                    throw new Error("Opción inválida");
+            }
+        } catch (error) {
+            console.error("Error:", error.message);
         }
     }
-}
 
-const pedidos = [];
-
-
-let mesa1 = new Restaurante();
-mesa1.mesa = 1;
-mesa1.agregar(1);
-mesa1.agregar(4);
-mesa1.agregar(5);
-pedidos.push(mesa1);
-
-
-let mesa2 = new Restaurante();
-mesa2.mesa = 2;
-mesa2.agregar(2);
-mesa2.agregar(3);
-mesa2.agregar(6);
-pedidos.push(mesa2);
-
-
-for (let mesa of pedidos) {
-    console.log(`Mesa ${mesa.mesa}`);
-    for (let pedido of mesa.pedidos) {
-        console.log(pedido);
+  
+    mostrarPedidos() {
+        console.table(this.pedidos);
+        console.log(`TOTAL Mesa ${this.numero}: $${this.totalCuenta}`);
     }
-    console.log(`Total: $${mesa.total}\n`);
 }
+
+
+let mesas = [];
+for (let i = 1; i <= 5; i++) {
+    mesas.push(new Mesa(i));
+}
+
+// Menú principal
+let opcion;
+do {
+    console.log("\n--- MENÚ PRINCIPAL ---");
+    console.log("1. Registrar pedido");
+    console.log("2. Mostrar pedidos de una mesa");
+    console.log("3. Salir");
+    opcion = parseInt(prompt("Seleccione una opción: "));
+
+    switch(opcion) {
+        case 1:
+            try {
+                let mesaNum = parseInt(prompt("Número de mesa (1-5): "));
+                if(mesaNum < 1 || mesaNum > 5) throw new Error("Mesa inválida");
+
+                console.log("\nProductos:");
+                console.log("1. Hamburguesa sencilla ($15)");
+                console.log("2. Hamburguesa con queso ($18)");
+                console.log("3. Hamburguesa especial ($20)");
+                console.log("4. Papas fritas ($8)");
+                console.log("5. Refresco ($5)");
+                console.log("6. Postre ($6)");
+
+                let prod = parseInt(prompt("Seleccione producto: "));
+                let cant = parseInt(prompt("Cantidad: "));
+                if(isNaN(cant) || cant <= 0) throw new Error("Cantidad inválida");
+
+                mesas[mesaNum-1].registrarPedido(prod, cant);
+                console.log("✅ Pedido registrado correctamente.");
+            } catch (error) {
+                console.error("Error:", error.message);
+            }
+            break;
+
+        case 2:
+            try {
+                let mesaNum = parseInt(prompt("Número de mesa (1-5): "));
+                if(mesaNum < 1 || mesaNum > 5) throw new Error("Mesa inválida");
+                mesas[mesaNum-1].mostrarPedidos();
+            } catch (error) {
+                console.error("Error:", error.message);
+            }
+            break;
+
+        case 3:
+            console.log("👋 Saliendo del sistema...");
+            break;
+
+        default:
+            console.log("Opción inválida.");
+    }
+} while(opcion !== 3);
